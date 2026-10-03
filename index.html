@@ -342,6 +342,7 @@
   }
   .form-submit:hover{background:var(--paper);}
   .form-hint{font-size:12px; color:#9E978A; margin-top:2px;}
+  .hp{position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden;}
 
   footer{padding:32px 0 40px; background:var(--night); color:var(--paper); border-top:1px solid rgba(234,228,214,.12);}
   .foot-row{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;}
@@ -746,6 +747,7 @@
           </select>
         </div>
         <div><label for="f-msg">Mensaje (opcional)</label><textarea id="f-msg" name="mensaje"></textarea></div>
+        <div class="hp" aria-hidden="true"><label for="f-empresa">Empresa</label><input id="f-empresa" name="empresa" type="text" tabindex="-1" autocomplete="off"></div>
         <button class="form-submit" type="submit">Solicitar información →</button>
         <p class="form-hint">Al enviar se abre WhatsApp con tus datos listos para mandarnos.</p>
       </form>
@@ -819,10 +821,24 @@
     requestAnimationFrame(tick);
   })();
 
-  /* Lead form → WhatsApp with the visitor's details prefilled. */
+  /* Lead form → Google Sheet (Apps Script web app) + WhatsApp with the
+     visitor's details prefilled. Source script: integraciones/leads-apps-script.gs */
+  var LEADS_ENDPOINT = '';
   (function () {
     var form = document.getElementById('lead-form');
     if (!form) return;
+    var qs = new URLSearchParams(location.search);
+    var origen = ['utm_source', 'utm_medium', 'utm_campaign']
+      .map(function (k) { return qs.get(k); }).filter(Boolean).join(' / ') || 'web';
+    // keepalive lets the request finish even though WhatsApp opens right after.
+    function saveLead(v) {
+      if (!LEADS_ENDPOINT) return;
+      var body = new URLSearchParams({
+        nombre: v('nombre'), telefono: v('telefono'), correo: v('correo'),
+        interes: v('interes'), mensaje: v('mensaje'), empresa: v('empresa'), origen: origen
+      });
+      try { fetch(LEADS_ENDPOINT, { method: 'POST', mode: 'no-cors', keepalive: true, body: body }); } catch (err) {}
+    }
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       if (!form.checkValidity()) { form.reportValidity(); return; }
@@ -835,9 +851,10 @@
         'Interés: ' + v('interes')
       ];
       if (v('mensaje')) lines.push('Mensaje: ' + v('mensaje'));
+      saveLead(v);
       var url = 'https://wa.me/523321669764?text=' + encodeURIComponent(lines.join('\n'));
-      var w = window.open(url, '_blank', 'noopener');
-      if (!w) window.location.href = url;
+      var w = window.open(url, '_blank');
+      if (w) w.opener = null; else window.location.href = url;
       form.querySelector('.form-submit').textContent = 'Abriendo WhatsApp…';
     });
   })();
