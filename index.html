@@ -2,11 +2,16 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TERRA 563 — Santa Teresita, Guadalajara</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>TERRA 563 · Santa Teresita, Guadalajara</title>
 <meta name="description" content="TERRA 563: desarrollo boutique de 9 departamentos en Santa Teresita, Guadalajara. Elevador, roof top con asador, acceso controlado.">
+<meta property="og:title" content="TERRA 563 · Santa Teresita, Guadalajara">
+<meta property="og:description" content="9 departamentos de 35 m² en preventa, a pasos de Chapultepec y Av. México.">
+<meta property="og:image" content="assets/render-atardecer.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="assets/hero-street.webp">
+<link rel="stylesheet" href="scrollcraft.css">
 <style>
   :root{
     --paper:#EAE4D6;
@@ -20,15 +25,25 @@
     --steel:#33454C;
     --garden:#55684A;
     --gold:#C79A7D;
+    --night:#0B1520;
     --line:rgba(23,20,15,.16);
     --display:'Space Grotesk', sans-serif;
     --body:'Inter', sans-serif;
     --mono:'JetBrains Mono', monospace;
+    --hdr:69px;
+
+    /* scrollcraft tokens mapped to the brand */
+    --sc-canvas:#EAE4D6; --sc-surface:#DED6C4;
+    --sc-ink:#17140F;    --sc-ink-soft:#4A463C;
+    --sc-accent:#9C4A2E; --sc-accent-ink:#EAE4D6;
+    --sc-font-display:'Space Grotesk', sans-serif;
+    --sc-font-text:'Inter', sans-serif;
+    --sc-font-mono:'JetBrains Mono', monospace;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
   body{
     background:var(--paper); color:var(--ink); font-family:var(--body);
+    font-size:16px; line-height:1.5; letter-spacing:0;
     -webkit-font-smoothing:antialiased;
   }
   a{color:inherit;}
@@ -38,132 +53,207 @@
     font-family:var(--mono); font-size:12px; letter-spacing:.18em; text-transform:uppercase;
     color:var(--brick);
   }
-  .rule{height:1px; background:var(--line);}
+  [data-sc-progress]{background:var(--brick); z-index:70;}
 
   /* ===== NAV ===== */
   header{
-    position:sticky; top:0; z-index:50;
-    background:rgba(234,228,214,.9); backdrop-filter:blur(6px);
+    position:sticky; top:0; z-index:60; height:var(--hdr);
+    background:rgba(234,228,214,.9); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
     border-bottom:1px solid var(--line);
   }
   nav{
-    display:flex; align-items:center; justify-content:space-between;
-    padding:20px 0;
+    display:flex; align-items:center; justify-content:space-between; gap:20px;
+    height:var(--hdr);
   }
   .logo{
-    font-family:var(--display); font-weight:700; font-size:20px; letter-spacing:.06em;
+    font-family:var(--display); font-weight:700; font-size:20px; letter-spacing:.06em; text-decoration:none;
   }
   .logo span{color:var(--brick);}
-  .navlinks{display:flex; gap:34px; font-size:14px;}
+  .navlinks{display:flex; gap:30px; font-size:14px;}
   .navlinks a{text-decoration:none; opacity:.75; transition:opacity .2s;}
   .navlinks a:hover{opacity:1;}
+  .navright{display:flex; align-items:center; gap:18px;}
+  .navwa{font-family:var(--mono); font-size:12px; text-decoration:none; display:flex; align-items:center; gap:7px; opacity:.85;}
+  .navwa:hover{opacity:1;}
+  .navwa svg{width:16px; height:16px;}
   .navcta{
-    font-family:var(--mono); font-size:12px; letter-spacing:.06em;
+    font-family:var(--mono); font-size:12px; letter-spacing:.06em; text-transform:uppercase;
     background:var(--ink); color:var(--paper); padding:11px 18px;
-    text-decoration:none; white-space:nowrap;
+    text-decoration:none; white-space:nowrap; transition:background .15s ease;
   }
   .navcta:hover{background:var(--brick);}
-  .navtoggle{display:none;}
 
-  /* ===== HERO ===== */
-  .hero{
-    padding:76px 0 40px; position:relative; overflow:hidden;
-  }
-  .hero-grid{
-    display:grid; grid-template-columns:1.05fr .95fr; gap:56px; align-items:center;
-  }
-  .hero h1{
-    font-family:var(--display); font-weight:700;
-    font-size:clamp(48px,6.6vw,84px); line-height:.96; letter-spacing:-.01em;
-    margin-top:18px;
-  }
-  .hero h1 em{font-style:normal; color:var(--brick);}
-  .hero p.lead{
-    margin-top:22px; font-size:18px; line-height:1.6; color:var(--ink-soft); max-width:46ch;
-  }
-  .hero .loc{
-    margin-top:16px; font-family:var(--mono); font-size:13px; letter-spacing:.05em; color:var(--ink-soft);
-  }
-  .hero-ctas{display:flex; gap:14px; margin-top:34px; flex-wrap:wrap;}
   .btn{
     font-family:var(--mono); font-size:13px; letter-spacing:.04em;
     padding:15px 24px; text-decoration:none; display:inline-block; border:1.5px solid var(--ink);
-    transition:transform .15s ease, background .15s ease, color .15s ease;
+    transition:transform .15s ease, background-color .15s ease, color .15s ease, border-color .15s ease;
   }
   .btn-solid{background:var(--ink); color:var(--paper);}
   .btn-solid:hover{background:var(--brick); border-color:var(--brick); transform:translateY(-1px);}
   .btn-outline{background:transparent; color:var(--ink);}
   .btn-outline:hover{background:var(--ink); color:var(--paper); transform:translateY(-1px);}
 
-  .hero-visual{position:relative;}
-  .hero-visual svg{width:100%; height:auto;}
+  /* ===== HERO: four planes, one dolly ===== */
+  section.hero{padding:0;}
+  .hero .sc-stage{
+    background:#C0B3A0;
+  }
+  .scene{
+    --sw:max(100vw, calc((100svh - var(--hdr)) * 1.7904 * 1.03));
+    position:absolute; left:50%; bottom:0;
+    width:var(--sw); aspect-ratio:1375/768;
+    translate:-53.8% 0;
+  }
+  .scene img{position:absolute; left:0; width:100%; pointer-events:none; user-select:none;}
+  .l-sky{bottom:0; height:auto; transform:translateY(calc(var(--sc-p,0) * 5%)) scale(calc(1 + var(--sc-p,0) * .03)); transform-origin:50% 100%;}
+  .l-street{top:0; height:100%; transform-origin:53.8% 92%; transform:scale(calc(1 + var(--sc-p,0) * .11));}
+  .l-trees{top:0; height:100%; transform-origin:53.8% 58%; transform:scale(calc(1 + var(--sc-p,0) * .34)); opacity:calc(1 - var(--sc-p,0) * .5);}
+  .wordmark{
+    position:absolute; left:53.8%; top:12%; translate:-50% 0;
+    font-family:var(--display); font-weight:700; line-height:.8; letter-spacing:-.045em; white-space:nowrap;
+    font-size:calc(var(--sw) * .148); color:rgba(23,20,15,.86);
+    transform:translateY(calc(var(--sc-p,0) * -18%)); opacity:calc(1 - var(--sc-p,0) * 1.1);
+    pointer-events:none; user-select:none;
+  }
+  .wordmark span{color:var(--brick-2);}
+  .hero-scrim{
+    position:absolute; inset:auto 0 0 0; height:62%; z-index:4; pointer-events:none;
+    background:linear-gradient(to top, rgba(18,14,10,.84) 0%, rgba(18,14,10,.62) 34%, rgba(18,14,10,.18) 70%, transparent 100%);
+    -webkit-mask-image:linear-gradient(90deg,#000 0%,#000 46%,transparent 74%);
+            mask-image:linear-gradient(90deg,#000 0%,#000 46%,transparent 74%);
+  }
+  .hero-copy{
+    position:absolute; z-index:5; left:max(32px, calc((100vw - 1180px) / 2 + 32px)); bottom:clamp(40px, 9svh, 96px);
+    max-width:620px; color:var(--paper);
+  }
+  .hero-copy .eyebrow{color:#F0C6A6;}
+  .hero h1{
+    font-family:var(--display); font-weight:700;
+    font-size:clamp(46px,5.6vw,84px); line-height:.96; letter-spacing:-.015em;
+    margin-top:16px;
+  }
+  .hero h1 em{font-style:normal; color:#F2A57E;}
+  .hero-ctas{display:flex; gap:14px; margin-top:30px; flex-wrap:wrap;}
+  .hero .btn-solid{background:var(--paper); color:var(--ink); border-color:var(--paper);}
+  .hero .btn-solid:hover{background:var(--brick); color:var(--paper); border-color:var(--brick);}
+  .hero .btn-outline{color:var(--paper); border-color:rgba(234,228,214,.7);}
+  .hero .btn-outline:hover{background:var(--paper); color:var(--ink); border-color:var(--paper);}
+  .render-note{
+    position:absolute; z-index:5; right:20px; top:calc(var(--hdr) + 12px);
+    font-family:var(--mono); font-size:10px; letter-spacing:.06em; color:rgba(23,20,15,.7);
+    background:rgba(234,228,214,.72); padding:4px 8px;
+  }
 
+  /* ===== INTRO (lead + stats) ===== */
+  .intro{padding:88px 0 0;}
+  .intro-grid{display:grid; grid-template-columns:1.15fr .85fr; gap:56px; align-items:end;}
+  .intro .lead{font-family:var(--display); font-size:clamp(22px,2.3vw,30px); line-height:1.32; font-weight:500; letter-spacing:-.01em; max-width:30ch;}
+  .intro .lead-sub{font-size:16px; line-height:1.65; color:var(--ink-soft); max-width:44ch;}
+  .intro .loc{margin-top:18px; font-family:var(--mono); font-size:12px; letter-spacing:.05em; color:var(--ink-soft);}
   .stat-strip{
     margin-top:64px; border-top:1px solid var(--line); border-bottom:1px solid var(--line);
     display:grid; grid-template-columns:repeat(4,1fr);
   }
-  .stat{padding:26px 6px; text-align:left; border-left:1px solid var(--line);}
-  .stat:first-child{border-left:none;}
-  .stat .n{font-family:var(--display); font-weight:700; font-size:32px;}
+  .stat{padding:26px 18px; text-align:left; border-left:1px solid var(--line);}
+  .stat:first-child{border-left:none; padding-left:0;}
+  .stat .n{font-family:var(--display); font-weight:700; font-size:clamp(28px,3vw,40px); letter-spacing:-.01em;}
   .stat .l{font-family:var(--mono); font-size:11px; letter-spacing:.08em; color:var(--ink-soft); margin-top:6px; text-transform:uppercase;}
 
   /* ===== SECTION shells ===== */
   section{padding:96px 0;}
   .section-head{max-width:640px; margin-bottom:52px;}
   .section-head h2{
-    font-family:var(--display); font-weight:600; font-size:clamp(30px,3.4vw,44px);
-    margin-top:14px; letter-spacing:-.01em;
+    font-family:var(--display); font-weight:600; font-size:clamp(30px,3.4vw,44px); line-height:1.08;
+    letter-spacing:-.015em;
   }
   .section-head p{margin-top:16px; color:var(--ink-soft); font-size:16px; line-height:1.65;}
 
   /* ===== CONCEPTO ===== */
   .concept{background:var(--paper-2);}
+  .concept-grid{display:grid; grid-template-columns:.9fr 1.1fr; gap:56px; align-items:end; margin-bottom:56px;}
+  .concept-grid .section-head{margin-bottom:0;}
+  .concept-fig{position:relative;}
+  .concept-fig img{width:100%; height:auto; aspect-ratio:5/4; object-fit:cover; object-position:64% 22%;}
+  .fig-cap{margin-top:10px; font-family:var(--mono); font-size:11px; letter-spacing:.05em; color:var(--ink-soft);}
   .materials{
     display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line);
-    border:1px solid var(--line); margin-top:8px;
+    border:1px solid var(--line);
   }
-  .material{background:var(--paper-2); padding:26px 22px;}
-  .material .sw{width:26px; height:26px; margin-bottom:16px;}
+  .material{background:var(--paper-2); padding:0 0 26px;}
+  .material .sw{height:84px; margin-bottom:20px;}
+  .material h3, .material p{padding:0 22px;}
   .material h3{font-family:var(--display); font-size:17px; font-weight:600;}
   .material p{font-size:13.5px; color:var(--ink-soft); margin-top:8px; line-height:1.5;}
 
-  /* ===== UNIDADES ===== */
-  .floors{
-    margin-top:8px; border:1px solid var(--line);
+  /* ===== UNIDADES: the building lights up floor by floor ===== */
+  #unidades{padding:96px 0 0;}
+  #unidades .section-head{margin-bottom:0;}
+  section.floors-act{padding:0; background:var(--paper);}
+  .floors-act .sc-stage{display:flex; align-items:center;}
+  .floors-stage{
+    display:grid; grid-template-columns:auto 1fr; gap:clamp(32px,6vw,96px); align-items:center;
+    width:100%; padding-top:calc(var(--hdr) + 24px); padding-bottom:28px;
   }
+  .tower{
+    --dusk:0; --lit-top:100%;
+    position:relative; height:calc(100svh - var(--hdr) - 80px); max-height:780px; aspect-ratio:320/710;
+    background:var(--night); overflow:hidden; box-shadow:0 6px 14px rgba(23,20,15,.18), 0 30px 60px -20px rgba(23,20,15,.35);
+  }
+  .tower img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;}
+  .tower .t-base{filter:brightness(calc(1 - var(--dusk) * .5)) saturate(calc(1 - var(--dusk) * .4));}
+  .tower .t-dusk{position:absolute; inset:0; background:linear-gradient(180deg,#0B1A2E 0%,#13233A 60%,#1A2230 100%); mix-blend-mode:multiply; opacity:calc(var(--dusk) * .55);}
+  .tower .t-lit{clip-path:inset(var(--lit-top) 0 0 0); filter:saturate(1.12) brightness(1.04);}
+  .tower .t-glow{
+    position:absolute; left:-10%; right:-10%; top:var(--glow-top,100%); height:var(--glow-h,0%);
+    background:radial-gradient(60% 70% at 50% 60%, rgba(255,190,110,.55), transparent 70%);
+    mix-blend-mode:screen; opacity:var(--glow-o,0); pointer-events:none;
+  }
+  .tower-cap{position:absolute; left:10px; bottom:8px; font-family:var(--mono); font-size:10px; letter-spacing:.06em; color:rgba(234,228,214,.75);}
+  .floors{border:1px solid var(--line); background:var(--paper); max-width:720px;}
   .floor-row{
-    display:grid; grid-template-columns:110px 1fr 160px 220px; align-items:center;
-    padding:20px 24px; border-top:1px solid var(--line); gap:16px;
+    display:grid; grid-template-columns:76px 1fr 120px 170px; align-items:center;
+    padding:17px 22px; border-top:1px solid var(--line); gap:14px; position:relative;
+    transition:background-color .3s ease, color .3s ease;
   }
   .floor-row:first-child{border-top:none;}
   .floor-row.head{
     font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-soft);
-    padding:14px 24px;
+    padding:12px 22px;
   }
+  .floor-row:not(.head)::before{
+    content:""; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--brick);
+    transform:scaleY(0); transform-origin:50% 100%; transition:transform .35s cubic-bezier(.23,1,.32,1);
+  }
+  .floor-row.is-lit::before{transform:scaleY(1);}
+  .floor-row.is-on{background:var(--ink); color:var(--paper);}
+  .floor-row.is-on .pill{color:#E8D9C4; border-color:rgba(234,228,214,.35);}
+  .floor-row.is-on .pill.on{color:#F2A57E; border-color:#F2A57E;}
   .floor-tag{font-family:var(--mono); font-size:14px; font-weight:500;}
   .floor-desc{font-size:15px;}
-  .floor-desc b{font-weight:600;}
-  .floor-area{font-family:var(--mono); font-size:14px;}
+  .floor-area{font-family:var(--mono); font-size:13px;}
   .floor-tags{display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;}
   .pill{
     font-family:var(--mono); font-size:10.5px; letter-spacing:.04em;
     border:1px solid var(--line); padding:5px 9px; color:var(--ink-soft);
   }
   .pill.on{border-color:var(--brick); color:var(--brick);}
+  .unit-note{margin-top:18px; font-size:13.5px; color:var(--ink-soft); max-width:64ch; line-height:1.6;}
 
-  .unit-note{
-    margin-top:22px; font-size:14px; color:var(--ink-soft); max-width:64ch; line-height:1.6;
+  /* ===== AMENIDADES: lateral rail ===== */
+  section.amen-act{padding:0; background:var(--paper-2);}
+  .amen-act .sc-stage{display:flex; align-items:center;}
+  .rail{gap:24px; align-items:stretch; padding:calc(var(--hdr) + 32px) 0 32px max(32px, calc((100vw - 1180px) / 2 + 32px));}
+  .rail-lead{flex:0 0 min(360px, 80vw); padding-right:24px; align-self:center;}
+  .rail-lead h2{font-family:var(--display); font-weight:600; font-size:clamp(30px,3.4vw,44px); line-height:1.08; letter-spacing:-.015em;}
+  .rail-lead p{margin-top:16px; color:var(--ink-soft); font-size:16px; line-height:1.65;}
+  .amen{
+    flex:0 0 clamp(260px, 26vw, 340px); background:var(--paper); border:1px solid var(--line);
+    padding:30px 26px; min-height:300px; display:flex; flex-direction:column; justify-content:space-between;
   }
-
-  /* ===== AMENIDADES ===== */
-  .amen-grid{
-    display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line);
-    border:1px solid var(--line); margin-top:8px;
-  }
-  .amen{background:var(--paper); padding:34px 28px; min-height:180px; display:flex; flex-direction:column; justify-content:space-between;}
-  .amen .idx{font-family:var(--mono); font-size:12px; color:var(--brick);}
-  .amen h3{font-family:var(--display); font-size:19px; font-weight:600; margin-top:26px;}
-  .amen p{font-size:13.5px; color:var(--ink-soft); margin-top:8px; line-height:1.5;}
+  .amen svg{width:34px; height:34px; color:var(--brick);}
+  .amen h3{font-family:var(--display); font-size:21px; font-weight:600; margin-top:26px;}
+  .amen p{font-size:14px; color:var(--ink-soft); margin-top:10px; line-height:1.55;}
+  .rail-end{flex:0 0 32px;}
 
   /* ===== ACABADOS ===== */
   .finishes{margin-top:8px; display:grid; grid-template-columns:repeat(2,1fr); gap:28px 48px;}
@@ -171,6 +261,8 @@
   .finish-item .dot{width:7px; height:7px; background:var(--brick); margin-top:9px; flex:none;}
   .finish-item b{font-family:var(--display); font-size:16px; font-weight:600; display:block;}
   .finish-item span{font-size:13.5px; color:var(--ink-soft); line-height:1.5;}
+  #acabados .wrap{display:grid; grid-template-columns:.8fr 1.2fr; gap:56px; align-items:start;}
+  #acabados .section-head{margin-bottom:0; position:sticky; top:calc(var(--hdr) + 32px);}
 
   /* ===== UBICACION ===== */
   .location{background:var(--ink); color:var(--paper);}
@@ -182,37 +274,21 @@
   .loc-list li:before{content:"→"; position:absolute; left:0; color:var(--brick);}
   .loc-list b{color:var(--paper); font-family:var(--display); font-weight:600;}
   .map-frame{
-    border:1px solid #4A463C; aspect-ratio:1/1; position:relative; overflow:hidden;
-    background:
-      linear-gradient(#26241D 1px, transparent 1px) 0 0/40px 40px,
-      linear-gradient(90deg,#26241D 1px, transparent 1px) 0 0/40px 40px,
-      #1E1B15;
+    border:1px solid #4A463C; aspect-ratio:1/1; position:relative; overflow:hidden; background:#1E1B15;
   }
-  .map-pin{
-    position:absolute; left:52%; top:46%; width:16px; height:16px; background:var(--brick);
-    border:3px solid var(--paper); border-radius:50%;
-  }
-  .map-frame .addr{
-    position:absolute; left:20px; bottom:20px; right:20px;
-    font-family:var(--mono); font-size:12px; color:#B9B2A5; line-height:1.6;
-  }
+  .map-frame iframe{position:absolute; inset:0;}
 
   /* ===== PRECIO ===== */
   .price-wrap{display:grid; grid-template-columns:1.1fr .9fr; gap:56px; align-items:start;}
-  .price-card{
-    border:1px solid var(--line); padding:40px;
-  }
+  .price-card{border:1px solid var(--line); padding:40px;}
   .price-card .from{font-family:var(--mono); font-size:12px; letter-spacing:.08em; color:var(--ink-soft); text-transform:uppercase;}
-  .price-card .val{font-family:var(--display); font-weight:700; font-size:56px; margin-top:10px;}
+  .price-card .val{font-family:var(--display); font-weight:700; font-size:44px; margin-top:10px; letter-spacing:-.01em;}
   .price-card .val span{color:var(--brick);}
   .price-card .ticket{margin-top:18px; font-size:15px; color:var(--ink-soft);}
-  .price-list{margin-top:30px; display:flex; flex-direction:column; gap:0;}
-  .price-list div{
-    display:flex; justify-content:space-between; padding:14px 0; border-top:1px solid var(--line); font-size:14px;
-  }
+  .price-list{margin-top:30px; display:flex; flex-direction:column;}
+  .price-list div{display:flex; justify-content:space-between; padding:14px 0; border-top:1px solid var(--line); font-size:14px;}
   .price-list div span:first-child{color:var(--ink-soft);}
   .price-list div span:last-child{font-family:var(--mono);}
-
   .scheme h3{font-family:var(--display); font-size:19px; font-weight:600; margin-bottom:18px;}
   .scheme-bar{display:flex; height:14px; border:1px solid var(--ink); overflow:hidden; margin-bottom:14px;}
   .scheme-bar div:nth-child(1){width:30%; background:var(--brick);}
@@ -223,58 +299,140 @@
   .scheme-legend i{width:9px; height:9px; display:inline-block;}
   .scheme-note{margin-top:20px; font-size:13.5px; color:var(--ink-soft); line-height:1.6;}
 
-  /* ===== CONTACTO ===== */
-  .contact{background:var(--paper-2);}
+  /* ===== CIERRE: night falls, the building is home ===== */
+  section.nightfall{padding:0; background:var(--night); position:relative;}
+  .night-fig{position:relative; margin:0;}
+  .night-fig img{width:100%; height:min(92svh, 56.2vw); object-fit:cover; object-position:54% 60%;}
+  .night-fig::after{
+    content:""; position:absolute; inset:auto 0 0 0; height:24%;
+    background:linear-gradient(to top, var(--night), transparent);
+  }
+  .night-copy{position:absolute; z-index:2; top:clamp(32px, 9vw, 120px); left:max(32px, calc((100vw - 1180px) / 2 + 32px)); max-width:min(440px, 34vw); color:var(--paper);}
+  .night-copy h2{font-family:var(--display); font-weight:600; font-size:clamp(32px,4.2vw,58px); line-height:1.02; letter-spacing:-.02em;}
+  .night-copy p{margin-top:16px; font-size:16px; line-height:1.6; color:#C9C2B4;}
+  .contact{background:var(--night); color:var(--paper); padding:24px 0 96px;}
   .contact-grid{display:grid; grid-template-columns:.9fr 1.1fr; gap:64px;}
-  .contact-info p{margin-top:16px; font-size:15px; color:var(--ink-soft); line-height:1.6; max-width:42ch;}
-  .contact-details{margin-top:34px; display:flex; flex-direction:column; gap:16px;}
-  .contact-details div{font-family:var(--mono); font-size:14px;}
-  .contact-details div b{display:block; font-family:var(--body); font-weight:600; font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:4px;}
+  .contact-lead{font-size:16px; line-height:1.6; color:#C9C2B4; max-width:42ch; margin-bottom:28px;}
+  .contact-details{display:flex; flex-direction:column; gap:18px;}
+  .contact-details div, .contact-details a{font-family:var(--mono); font-size:15px; text-decoration:none;}
+  .contact-details b{display:block; font-family:var(--body); font-weight:600; font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:#9E978A; margin-bottom:4px;}
+  .contact-details a:hover{color:#F2A57E;}
+  .wa-big{
+    display:inline-flex; align-items:center; gap:10px; margin-top:28px;
+    font-family:var(--mono); font-size:13px; letter-spacing:.04em; text-decoration:none;
+    background:var(--paper); color:var(--ink); padding:15px 22px; transition:background-color .15s ease, color .15s ease;
+  }
+  .wa-big:hover{background:#F2A57E;}
+  .wa-big svg{width:18px; height:18px;}
 
   form{display:flex; flex-direction:column; gap:16px;}
   .form-row{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
   input, select, textarea{
-    width:100%; font-family:var(--body); font-size:14px; padding:14px 16px;
-    border:1px solid var(--ink); background:var(--paper); color:var(--ink);
+    width:100%; font-family:var(--body); font-size:15px; padding:14px 16px;
+    border:1px solid rgba(234,228,214,.28); background:rgba(234,228,214,.06); color:var(--paper);
   }
+  select option{color:var(--ink);}
+  input:focus, select:focus, textarea:focus{outline:none; border-color:#F2A57E;}
   textarea{resize:vertical; min-height:90px;}
-  label{font-family:var(--mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:6px; display:block;}
+  label{font-family:var(--mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:#9E978A; margin-bottom:6px; display:block;}
   .form-submit{
     font-family:var(--mono); font-size:13px; letter-spacing:.04em;
-    background:var(--ink); color:var(--paper); border:none; padding:16px 24px; cursor:pointer;
-    margin-top:6px;
+    background:#F2A57E; color:var(--ink); border:none; padding:17px 24px; cursor:pointer;
+    margin-top:6px; transition:background-color .15s ease;
   }
-  .form-submit:hover{background:var(--brick);}
-  .form-hint{font-size:12px; color:var(--ink-soft); margin-top:2px;}
+  .form-submit:hover{background:var(--paper);}
+  .form-hint{font-size:12px; color:#9E978A; margin-top:2px;}
 
-  footer{padding:38px 0; border-top:1px solid var(--line);}
+  footer{padding:32px 0 40px; background:var(--night); color:var(--paper); border-top:1px solid rgba(234,228,214,.12);}
   .foot-row{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;}
   .foot-row .logo{font-size:16px;}
-  .foot-meta{font-family:var(--mono); font-size:11px; color:var(--ink-soft); letter-spacing:.04em;}
+  .foot-meta{font-family:var(--mono); font-size:11px; color:#9E978A; letter-spacing:.04em;}
 
-  @media(max-width:920px){
-    .hero-grid{grid-template-columns:1fr;}
-    .hero-visual{order:-1;}
-    .stat-strip{grid-template-columns:repeat(2,1fr);}
-    .stat:nth-child(3){border-left:none;}
-    .materials{grid-template-columns:repeat(2,1fr);}
-    .amen-grid{grid-template-columns:1fr;}
-    .floor-row{grid-template-columns:80px 1fr; row-gap:8px;}
-    .floor-area,.floor-tags{grid-column:2; justify-content:flex-start;}
-    .finishes{grid-template-columns:1fr;}
-    .loc-grid{grid-template-columns:1fr;}
-    .price-wrap{grid-template-columns:1fr;}
-    .contact-grid{grid-template-columns:1fr;}
+  /* floating WhatsApp */
+  .wa-float{
+    position:fixed; right:18px; bottom:18px; z-index:65; width:56px; height:56px; border-radius:50%;
+    background:#1F8A4C; color:#fff; display:grid; place-items:center;
+    box-shadow:0 3px 8px rgba(0,0,0,.22), 0 12px 28px -8px rgba(0,0,0,.4);
+    transition:transform .15s ease;
+  }
+  .wa-float:hover{transform:translateY(-2px);}
+  .wa-float svg{width:28px; height:28px;}
+
+  @media(max-width:1020px){
     .navlinks{display:none;}
+  }
+  @media(max-width:860px){
+    :root{--hdr:60px;}
+    .wrap{padding:0 20px;}
+    .navwa{display:none;}
+    .navcta{padding:10px 14px; font-size:11px;}
+    /* hero: copy over the sky, building anchored to the bottom */
+    .scene{--sw:calc(60svh * 1.7904); bottom:0;}
+    .wordmark{display:none;}
+    .hero-scrim{display:none;}
+    .hero-copy{left:20px; right:20px; top:calc(var(--hdr) + 26px); bottom:auto; color:var(--ink);}
+    .hero-copy .eyebrow{color:var(--brick-2);}
+    .hero h1{font-size:clamp(40px,11.5vw,56px);}
+    .hero h1 em{color:var(--brick-2);}
+    .hero-ctas{margin-top:22px; gap:10px;}
+    .hero .btn{padding:13px 18px; font-size:12px;}
+    .hero .btn-solid{background:var(--ink); color:var(--paper); border-color:var(--ink);}
+    .hero .btn-outline{color:var(--ink); border-color:var(--ink);}
+    .render-note{right:10px; top:auto; bottom:10px; left:10px; right:auto; font-size:9px;}
+
+    .intro{padding-top:64px;}
+    .intro-grid{grid-template-columns:1fr; gap:20px;}
+    .stat-strip{grid-template-columns:repeat(2,1fr); margin-top:40px;}
+    .stat{padding:20px 12px;}
+    .stat:nth-child(3){border-left:none; padding-left:0;}
+    .stat:nth-child(n+3){border-top:1px solid var(--line);}
+    section{padding:72px 0;}
+    .concept-grid{grid-template-columns:1fr; gap:28px; margin-bottom:36px;}
+    .materials{grid-template-columns:repeat(2,1fr);}
+    .material .sw{height:56px;}
+
+    #unidades{padding-top:72px;}
+    .floors-stage{grid-template-columns:1fr; gap:14px; justify-items:center; padding-top:calc(var(--hdr) + 12px); padding-bottom:12px;}
+    .tower{height:38svh;}
+    .floors{width:100%;}
+    .floor-row{grid-template-columns:52px 1fr auto; padding:9px 12px; gap:10px;}
+    .floor-row.head{display:none;}
+    .floor-desc{font-size:13px;}
+    .floor-area{font-size:11.5px;}
+    .floor-tags{display:none;}
+    .unit-note{font-size:11.5px; margin-top:8px; line-height:1.45;}
+
+    .rail{padding-left:20px;}
+    .amen{flex-basis:76vw; min-height:260px;}
+    .rail-lead{flex-basis:80vw;}
+
+    #acabados .wrap{grid-template-columns:1fr; gap:28px;}
+    #acabados .section-head{position:static;}
+    .finishes{grid-template-columns:1fr; gap:20px;}
+    .loc-grid{grid-template-columns:1fr; gap:36px;}
+    .price-wrap{grid-template-columns:1fr; gap:40px;}
+    .price-card{padding:28px 22px;}
+    .price-card .val{font-size:34px;}
+
+    .night-fig img{height:72svh; object-position:46% 60%;}
+    .night-copy{left:20px; right:20px; max-width:none; top:28px;}
+    .contact-grid{grid-template-columns:1fr; gap:40px;}
+    .form-row{grid-template-columns:1fr;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .l-sky,.l-street,.l-trees,.wordmark{transform:none !important; opacity:1 !important;}
+    .floor-row:not(.head)::before{transition:none;}
   }
 </style>
 </head>
 <body>
 
+<span data-sc-progress></span>
+
 <header>
   <div class="wrap">
-    <nav>
-      <div class="logo">TERRA<span> 563</span></div>
+    <nav aria-label="Principal">
+      <a href="#top" class="logo">TERRA<span> 563</span></a>
       <div class="navlinks">
         <a href="#concepto">Concepto</a>
         <a href="#unidades">Unidades</a>
@@ -282,32 +440,51 @@
         <a href="#ubicacion">Ubicación</a>
         <a href="#precio">Precio</a>
       </div>
-      <a href="#contacto" class="navcta">AGENDAR VISITA →</a>
+      <div class="navright">
+        <a class="navwa" href="https://wa.me/523321669764?text=Hola%2C%20me%20interesa%20TERRA%20563." target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></svg>
+          33 2166 9764
+        </a>
+        <a href="#contacto" class="navcta">Agendar recorrido</a>
+      </div>
     </nav>
   </div>
 </header>
 
-<section class="hero">
-  <div class="wrap">
-    <div class="hero-grid">
-      <div>
-        <div class="eyebrow">Preventa · Santa Teresita, Guadalajara</div>
-        <h1>Vivir en<br><em>escala boutique</em></h1>
-        <p class="lead">9 departamentos de 35 m² en un edificio de diseño distintivo, a pasos de Chapultepec y Av. México. Concreto aparente, ladrillo y herrería expuesta — arquitectura pensada para quien valora su espacio, no la masividad.</p>
-        <div class="loc">MANUEL M. DIÉGUEZ 563 · SANTA TERESITA · 44600 GUADALAJARA, JAL.</div>
-        <div class="hero-ctas">
-          <a href="#contacto" class="btn btn-solid">Agendar recorrido</a>
-          <a href="#precio" class="btn btn-outline">Ver precios</a>
-        </div>
-      </div>
+<main id="top">
 
-      <div class="hero-visual">
-        <img src="render-01.jpg" alt="Render TERRA 563 — fachada" style="width:100%; height:auto; display:block; border:1px solid var(--line);">
-        <div style="margin-top:10px; font-family:var(--mono); font-size:11px; letter-spacing:.05em; color:var(--ink-soft); text-align:right;">RENDER ILUSTRATIVO · SUJETO A CAMBIOS DE PROYECTO</div>
+<!-- HERO · pin, four planes. Sky, wordmark, street, foreground jacarandas. -->
+<section class="hero" data-sc-act="pin" data-sc-span="1.9" aria-label="Portada">
+  <div data-sc-stage>
+    <div class="scene" aria-hidden="true">
+      <img class="l-sky" src="assets/hero-sky.webp" alt="" width="1375" height="906">
+      <div class="wordmark">TERRA <span>563</span></div>
+      <img class="l-street" src="assets/hero-street.webp" alt="" width="1375" height="768" fetchpriority="high">
+      <img class="l-trees" src="assets/hero-trees.webp" alt="" width="1375" height="768">
+    </div>
+    <div class="hero-scrim" aria-hidden="true"></div>
+    <div class="hero-copy">
+      <div class="eyebrow">Preventa · Santa Teresita, Guadalajara</div>
+      <h1>Vivir en<br><em>escala boutique</em></h1>
+      <div class="hero-ctas">
+        <a href="#contacto" class="btn btn-solid">Agendar recorrido</a>
+        <a href="#precio" class="btn btn-outline">Ver precios</a>
       </div>
     </div>
+    <div class="render-note">RENDER ILUSTRATIVO · SUJETO A CAMBIOS DE PROYECTO</div>
+  </div>
+</section>
 
-    <div class="stat-strip">
+<section class="intro" data-sc-act="flow" aria-label="Resumen del proyecto">
+  <div class="wrap">
+    <div class="intro-grid" data-sc-in data-sc-stagger="90">
+      <p class="lead">9 departamentos de 35 m² en un edificio de diseño distintivo, a pasos de Chapultepec y Av. México.</p>
+      <div>
+        <p class="lead-sub">Concreto aparente, ladrillo y herrería expuesta: arquitectura pensada para quien valora su espacio, no la masividad.</p>
+        <div class="loc">MANUEL M. DIÉGUEZ 563 · SANTA TERESITA · 44600 GUADALAJARA, JAL.</div>
+      </div>
+    </div>
+    <div class="stat-strip" data-sc-in data-sc-stagger="80">
       <div class="stat"><div class="n">09</div><div class="l">Departamentos</div></div>
       <div class="stat"><div class="n">35 m²</div><div class="l">Superficie / unidad</div></div>
       <div class="stat"><div class="n">PB + 4</div><div class="l">Niveles + roof top</div></div>
@@ -316,14 +493,21 @@
   </div>
 </section>
 
-<section id="concepto" class="concept">
+<section id="concepto" class="concept" data-sc-act="flow">
   <div class="wrap">
-    <div class="section-head">
-      <div class="eyebrow">Concepto</div>
-      <h2>Arquitectura boutique, no masiva</h2>
-      <p>TERRA 563 nace en Santa Teresita con un objetivo simple: un edificio compacto y bien resuelto, con materiales honestos y espacios que se sienten diseñados a mano, no producidos en serie.</p>
+    <div class="concept-grid">
+      <div class="section-head" data-sc-in>
+        <h2>Arquitectura boutique, no masiva</h2>
+        <p>TERRA 563 nace en Santa Teresita con un objetivo simple: un edificio compacto y bien resuelto, con materiales honestos y espacios que se sienten diseñados a mano, no producidos en serie.</p>
+      </div>
+      <figure class="concept-fig">
+        <div data-sc-reveal="left" data-sc-reveal-at="0.12 0.42">
+          <img src="assets/render-atardecer.webp" alt="Detalle de la fachada: muro de concreto aparente con vegetación colgante y balcones de herrería" width="1375" height="768" loading="lazy">
+        </div>
+        <figcaption class="fig-cap">FACHADA LATERAL · CONCRETO APARENTE Y VEGETACIÓN</figcaption>
+      </figure>
     </div>
-    <div class="materials">
+    <div class="materials" data-sc-reveal="up" data-sc-reveal-at="0.34 0.62">
       <div class="material">
         <div class="sw" style="background:#B9B2A5"></div>
         <h3>Concreto aparente</h3>
@@ -348,102 +532,117 @@
   </div>
 </section>
 
-<section id="unidades">
+<section id="unidades" data-sc-act="flow">
   <div class="wrap">
-    <div class="section-head">
-      <div class="eyebrow">Unidades</div>
+    <div class="section-head" data-sc-in>
       <h2>9 departamentos, un solo estándar</h2>
       <p>Un diseño depurado y repetible por nivel, pensado para profesionistas e inversionistas patrimoniales que buscan eficiencia de espacio sin sacrificar diseño.</p>
     </div>
-
-    <div class="floors">
-      <div class="floor-row head">
-        <div>Nivel</div><div>Contenido</div><div>Área aprox.</div><div style="text-align:right">Características</div>
-      </div>
-      <div class="floor-row">
-        <div class="floor-tag">PB</div>
-        <div class="floor-desc">1 departamento</div>
-        <div class="floor-area">35 m²</div>
-        <div class="floor-tags"><span class="pill on">Acceso controlado</span></div>
-      </div>
-      <div class="floor-row">
-        <div class="floor-tag">N1</div>
-        <div class="floor-desc">2 departamentos</div>
-        <div class="floor-area">35 m² c/u</div>
-        <div class="floor-tags"><span class="pill">Elevador</span></div>
-      </div>
-      <div class="floor-row">
-        <div class="floor-tag">N2</div>
-        <div class="floor-desc">2 departamentos</div>
-        <div class="floor-area">35 m² c/u</div>
-        <div class="floor-tags"><span class="pill">Elevador</span></div>
-      </div>
-      <div class="floor-row">
-        <div class="floor-tag">N3</div>
-        <div class="floor-desc">2 departamentos</div>
-        <div class="floor-area">35 m² c/u</div>
-        <div class="floor-tags"><span class="pill">Elevador</span></div>
-      </div>
-      <div class="floor-row">
-        <div class="floor-tag">N4</div>
-        <div class="floor-desc">2 departamentos + acceso a roof top</div>
-        <div class="floor-area">35 m² c/u</div>
-        <div class="floor-tags"><span class="pill on">Terraza roof</span></div>
-      </div>
-      <div class="floor-row">
-        <div class="floor-tag">ROOF</div>
-        <div class="floor-desc">Terraza común, asador y área social</div>
-        <div class="floor-area">Amenidad</div>
-        <div class="floor-tags"><span class="pill on">Asador</span></div>
-      </div>
-    </div>
-    <p class="unit-note">Construcción total aproximada: 454 m². Distribución sujeta a los planos arquitectónicos finales del proyecto.</p>
   </div>
 </section>
 
-<section id="amenidades" class="concept">
-  <div class="wrap">
-    <div class="section-head">
-      <div class="eyebrow">Amenidades</div>
-      <h2>Lo esencial, bien resuelto</h2>
-      <p>Sin amenidades de relleno: cada una responde a cómo vive quien compra en Santa Tere.</p>
+<!-- PEAK · pin. The sun goes down and the building lights up, floor by floor. -->
+<section class="floors-act" data-sc-act="pin" data-sc-span="4.2" aria-label="Distribución por nivel">
+  <div data-sc-stage>
+    <div class="wrap floors-stage">
+      <div class="tower" id="tower" aria-hidden="true">
+        <img class="t-base" src="assets/fachada-frontal.webp" alt="" width="320" height="710" loading="lazy">
+        <div class="t-dusk"></div>
+        <img class="t-lit" src="assets/fachada-frontal.webp" alt="" width="320" height="710" loading="lazy">
+        <div class="t-glow"></div>
+        <div class="tower-cap">FACHADA PRINCIPAL</div>
+      </div>
+      <div>
+        <div class="floors" role="table" aria-label="Departamentos por nivel">
+          <div class="floor-row head" role="row">
+            <div role="columnheader">Nivel</div><div role="columnheader">Contenido</div><div role="columnheader">Área aprox.</div><div role="columnheader" style="text-align:right">Características</div>
+          </div>
+          <div class="floor-row" role="row" data-floor="0">
+            <div class="floor-tag" role="cell">PB</div>
+            <div class="floor-desc" role="cell">1 departamento</div>
+            <div class="floor-area" role="cell">35 m²</div>
+            <div class="floor-tags" role="cell"><span class="pill on">Acceso controlado</span></div>
+          </div>
+          <div class="floor-row" role="row" data-floor="1">
+            <div class="floor-tag" role="cell">N1</div>
+            <div class="floor-desc" role="cell">2 departamentos</div>
+            <div class="floor-area" role="cell">35 m² c/u</div>
+            <div class="floor-tags" role="cell"><span class="pill">Elevador</span></div>
+          </div>
+          <div class="floor-row" role="row" data-floor="2">
+            <div class="floor-tag" role="cell">N2</div>
+            <div class="floor-desc" role="cell">2 departamentos</div>
+            <div class="floor-area" role="cell">35 m² c/u</div>
+            <div class="floor-tags" role="cell"><span class="pill">Elevador</span></div>
+          </div>
+          <div class="floor-row" role="row" data-floor="3">
+            <div class="floor-tag" role="cell">N3</div>
+            <div class="floor-desc" role="cell">2 departamentos</div>
+            <div class="floor-area" role="cell">35 m² c/u</div>
+            <div class="floor-tags" role="cell"><span class="pill">Elevador</span></div>
+          </div>
+          <div class="floor-row" role="row" data-floor="4">
+            <div class="floor-tag" role="cell">N4</div>
+            <div class="floor-desc" role="cell">2 departamentos + acceso a roof top</div>
+            <div class="floor-area" role="cell">35 m² c/u</div>
+            <div class="floor-tags" role="cell"><span class="pill on">Terraza roof</span></div>
+          </div>
+          <div class="floor-row" role="row" data-floor="5">
+            <div class="floor-tag" role="cell">ROOF</div>
+            <div class="floor-desc" role="cell">Terraza común, asador y área social</div>
+            <div class="floor-area" role="cell">Amenidad</div>
+            <div class="floor-tags" role="cell"><span class="pill on">Asador</span></div>
+          </div>
+        </div>
+        <p class="unit-note">Construcción total aproximada: 454 m². Distribución sujeta a los planos arquitectónicos finales del proyecto.</p>
+      </div>
     </div>
-    <div class="amen-grid">
-      <div class="amen">
-        <div class="idx">01</div>
+  </div>
+</section>
+
+<!-- RANGE · pan. Amenities travel sideways. -->
+<section id="amenidades" class="amen-act" data-sc-act="pan" data-sc-span="2.8">
+  <div data-sc-stage>
+    <div class="rail" data-sc-pan="0.04">
+      <div class="rail-lead">
+        <h2>Lo esencial, bien resuelto</h2>
+        <p>Sin amenidades de relleno: cada una responde a cómo vive quien compra en Santa Tere.</p>
+      </div>
+      <article class="amen">
+        <svg viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="7" y="3" width="20" height="28"/><path d="M17 3v28M12 14l-2 2.5h4zM22 19.5l2-2.5h-4z"/></svg>
         <div><h3>Elevador</h3><p>Acceso directo a todos los niveles, del PB al N4.</p></div>
-      </div>
-      <div class="amen">
-        <div class="idx">02</div>
+      </article>
+      <article class="amen">
+        <svg viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 15h24a12 12 0 0 1-24 0ZM10 27l-3 5M24 27l3 5M12 10c0-3 3-3 3-6M18 10c0-3 3-3 3-6"/></svg>
         <div><h3>Roof top + asador</h3><p>Terraza común con área social y parrilla, vista abierta sobre Santa Teresita.</p></div>
-      </div>
-      <div class="amen">
-        <div class="idx">03</div>
+      </article>
+      <article class="amen">
+        <svg viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="7" y="15" width="20" height="16"/><path d="M11 15V10a6 6 0 0 1 12 0v5M17 21v4"/></svg>
         <div><h3>Acceso controlado</h3><p>Cerradura inteligente en planta baja para residentes y visitas.</p></div>
-      </div>
-      <div class="amen">
-        <div class="idx">04</div>
+      </article>
+      <article class="amen">
+        <svg viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 31h26M6 31V19h22v12M6 19V5h22v14M11 19v12M17 19v12M23 19v12"/></svg>
         <div><h3>Balcones y terrazas</h3><p>Extensiones exteriores en herrería ligera, propias de cada unidad.</p></div>
-      </div>
-      <div class="amen">
-        <div class="idx">05</div>
-        <div><h3>Diseño boutique</h3><p>Edificios típicos de la zona superan las 10 unidades — aquí, solo 9.</p></div>
-      </div>
-      <div class="amen">
-        <div class="idx">06</div>
+      </article>
+      <article class="amen">
+        <svg viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M10 31V4h14v27M4 31h26M14 9h2M18 9h2M14 14h2M18 14h2M14 19h2M18 19h2M15 31v-6h4v6"/></svg>
+        <div><h3>Diseño boutique</h3><p>Edificios típicos de la zona superan las 10 unidades. Aquí, solo 9.</p></div>
+      </article>
+      <article class="amen">
+        <svg viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M17 31s-10-9-10-17a10 10 0 0 1 20 0c0 8-10 17-10 17Z"/><circle cx="17" cy="14" r="3.5"/></svg>
         <div><h3>Ubicación caminable</h3><p>A minutos de Chapultepec, Av. México y el corredor de Santa Tere.</p></div>
-      </div>
+      </article>
+      <div class="rail-end" aria-hidden="true"></div>
     </div>
   </div>
 </section>
 
-<section id="acabados">
+<section id="acabados" data-sc-act="flow">
   <div class="wrap">
     <div class="section-head">
-      <div class="eyebrow">Acabados</div>
       <h2>Especificaciones de entrega</h2>
     </div>
-    <div class="finishes">
+    <div class="finishes" data-sc-in data-sc-stagger="70">
       <div class="finish-item"><div class="dot"></div><div><b>Pisos</b><span>Porcelanato 60×60 en áreas comunes de la unidad; madera de ingeniería en recámara.</span></div></div>
       <div class="finish-item"><div class="dot"></div><div><b>Cocina</b><span>Cubierta de granito, gabinetes en MDF.</span></div></div>
       <div class="finish-item"><div class="dot"></div><div><b>Baños</b><span>Cancel de cristal templado, mueble con espejo y lavabo flotante.</span></div></div>
@@ -454,22 +653,23 @@
   </div>
 </section>
 
-<section id="ubicacion" class="location">
+<section id="ubicacion" class="location" data-sc-act="flow">
   <div class="wrap">
-    <div class="section-head">
+    <div class="section-head" data-sc-in>
       <div class="eyebrow">Ubicación</div>
-      <h2>Santa Teresita, Guadalajara</h2>
-      <p>Uno de los barrios de mayor plusvalía y vida de calle de la ciudad — cafés, talleres de diseño y el corredor de Av. México a unos pasos.</p>
+      <h2 style="margin-top:14px">Santa Teresita, Guadalajara</h2>
+      <p>Uno de los barrios de mayor plusvalía y vida de calle de la ciudad: cafés, talleres de diseño y el corredor de Av. México a unos pasos.</p>
     </div>
     <div class="loc-grid">
-      <ul class="loc-list">
-        <li><b>Manuel M. Diéguez 563</b> — Santa Teresita, C.P. 44600, Guadalajara, Jalisco.</li>
+      <ul class="loc-list" data-sc-in data-sc-stagger="80">
+        <li><b>Manuel M. Diéguez 563</b>, Santa Teresita, C.P. 44600, Guadalajara, Jalisco.</li>
         <li><b>A pie:</b> Av. Chapultepec, Av. México y el corredor gastronómico de Santa Tere.</li>
         <li><b>Perfil de la zona:</b> jóvenes profesionistas y vida urbana de bajo perfil, alta demanda de renta.</li>
         <li><b>Movilidad:</b> conexión directa hacia Américas, Vallarta y el centro de la ciudad.</li>
       </ul>
-      <div class="map-frame">
+      <div class="map-frame" data-sc-reveal="iris" data-sc-reveal-at="0.2 0.55">
         <iframe
+          title="Mapa: Manuel M. Diéguez 563, Santa Teresita, Guadalajara"
           src="https://www.google.com/maps?q=Manuel+M.+Di%C3%A9guez+563,+Santa+Teresita,+44600+Guadalajara,+Jalisco&output=embed"
           width="100%" height="100%" style="border:0; filter:grayscale(1) invert(92%) contrast(90%);" loading="lazy">
         </iframe>
@@ -478,16 +678,16 @@
   </div>
 </section>
 
-<section id="precio">
+<section id="precio" data-sc-act="flow">
   <div class="wrap">
-    <div class="section-head">
+    <div class="section-head" data-sc-in>
       <div class="eyebrow">Preventa · Etapa de planeación</div>
-      <h2>Ticket de entrada</h2>
+      <h2 style="margin-top:14px">Ticket de entrada</h2>
     </div>
     <div class="price-wrap">
-      <div class="price-card">
+      <div class="price-card" data-sc-in>
         <div class="from">Ticket estimado por unidad</div>
-        <div class="val" style="font-size:44px;">$2.0M<span>–$2.24M MXN</span></div>
+        <div class="val">$2.0M<span>–$2.24M MXN</span></div>
         <div class="ticket">Unidad tipo de 35 m², preventa en etapa de planeación.</div>
         <div class="price-list">
           <div><span>Superficie por unidad</span><span>35 m²</span></div>
@@ -495,9 +695,9 @@
           <div><span>Entrega estimada</span><span>24 meses</span></div>
         </div>
       </div>
-      <div class="scheme">
+      <div class="scheme" data-sc-in>
         <h3>Esquema de pago sugerido</h3>
-        <div class="scheme-bar"><div></div><div></div><div></div></div>
+        <div data-sc-reveal="right" data-sc-reveal-at="0.3 0.6"><div class="scheme-bar"><div></div><div></div><div></div></div></div>
         <div class="scheme-legend">
           <span><i style="background:#9C4A2E"></i>30% apartado + firma</span>
           <span><i style="background:#8C8477"></i>50% durante construcción</span>
@@ -509,45 +709,138 @@
   </div>
 </section>
 
+<!-- CLOSE · reveal. Night falls on Diéguez 563; the form sits under the lit building. -->
+<section class="nightfall" data-sc-act="flow" aria-label="Agenda tu recorrido">
+  <figure class="night-fig" data-sc-reveal="up" data-sc-reveal-at="0.04 0.42">
+    <img src="assets/render-noche.webp" alt="TERRA 563 de noche: departamentos iluminados, balcones con vegetación y la calle de Santa Teresita" width="1375" height="768" loading="lazy">
+  </figure>
+  <div class="night-copy">
+    <h2>Agenda tu recorrido</h2>
+  </div>
+</section>
+
 <section id="contacto" class="contact">
   <div class="wrap">
     <div class="contact-grid">
       <div class="contact-info">
-        <div class="eyebrow">Contacto</div>
-        <h2 style="font-family:var(--display); font-size:32px; font-weight:600; margin-top:14px;">Agenda tu recorrido</h2>
-        <p>Déjanos tus datos y te contactamos para mostrarte planos, disponibilidad y el esquema de pago vigente.</p>
+        <p class="contact-lead">Déjanos tus datos y te contactamos para mostrarte planos, disponibilidad y el esquema de pago vigente.</p>
         <div class="contact-details">
-          <div><b>WhatsApp</b>[Pendiente — indícanos el número]</div>
-          <div><b>Correo</b>[Pendiente — indícanos el correo]</div>
+          <a href="https://wa.me/523321669764?text=Hola%2C%20me%20interesa%20TERRA%20563." target="_blank" rel="noopener"><b>WhatsApp</b>33 2166 9764</a>
           <div><b>Dirección de obra</b>Manuel M. Diéguez 563, Santa Teresita, Guadalajara, Jal.</div>
         </div>
+        <a class="wa-big" href="https://wa.me/523321669764?text=Hola%2C%20me%20interesa%20TERRA%20563.%20%C2%BFMe%20comparten%20planos%20y%20disponibilidad%3F" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></svg>
+          Escríbenos por WhatsApp
+        </a>
       </div>
-      <form onsubmit="event.preventDefault(); this.querySelector('.form-submit').textContent='Enviado ✓';">
+      <form id="lead-form" novalidate>
         <div class="form-row">
-          <div><label>Nombre</label><input type="text" required></div>
-          <div><label>Teléfono</label><input type="tel" required></div>
+          <div><label for="f-nombre">Nombre</label><input id="f-nombre" name="nombre" type="text" autocomplete="name" required></div>
+          <div><label for="f-tel">Teléfono</label><input id="f-tel" name="telefono" type="tel" autocomplete="tel" required></div>
         </div>
-        <div><label>Correo</label><input type="email" required></div>
-        <div><label>Me interesa</label>
-          <select>
+        <div><label for="f-correo">Correo</label><input id="f-correo" name="correo" type="email" autocomplete="email" required></div>
+        <div><label for="f-interes">Me interesa</label>
+          <select id="f-interes" name="interes">
             <option>Comprar para vivir</option>
             <option>Comprar para inversión / renta</option>
           </select>
         </div>
-        <div><label>Mensaje (opcional)</label><textarea></textarea></div>
+        <div><label for="f-msg">Mensaje (opcional)</label><textarea id="f-msg" name="mensaje"></textarea></div>
         <button class="form-submit" type="submit">Solicitar información →</button>
-        <p class="form-hint">Este formulario es una maqueta de demostración; conéctalo a tu CRM o WhatsApp Business antes de publicar el sitio.</p>
+        <p class="form-hint">Al enviar se abre WhatsApp con tus datos listos para mandarnos.</p>
       </form>
     </div>
   </div>
 </section>
 
+</main>
+
 <footer>
   <div class="wrap foot-row">
-    <div class="logo">TERRA<span style="color:var(--brick)"> 563</span></div>
-    <div class="foot-meta">SANTA TERESITA · GUADALAJARA, JAL. — MATERIAL DE VENTA, SIN VALIDEZ CONTRACTUAL</div>
+    <div class="logo">TERRA<span style="color:#F2A57E"> 563</span></div>
+    <div class="foot-meta">SANTA TERESITA · GUADALAJARA, JAL. · MATERIAL DE VENTA, SIN VALIDEZ CONTRACTUAL</div>
   </div>
 </footer>
 
+<a class="wa-float" href="https://wa.me/523321669764?text=Hola%2C%20me%20interesa%20TERRA%20563." target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></svg>
+</a>
+
+<script src="scrollcraft.js"></script>
+<script>
+  ScrollCraft.mount(document.body);
+
+  /* Signature move: the sun goes down on the frontal elevation and the building
+     lights up level by level, PB to ROOF, in step with the table. Driven off the
+     act's --sc-p; the engine is untouched. */
+  (function () {
+    var act = document.querySelector('.floors-act');
+    var tower = document.getElementById('tower');
+    if (!act || !tower) return;
+    var rows = Array.prototype.slice.call(act.querySelectorAll('.floor-row[data-floor]'));
+    var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // floor boundaries as % of the elevation image height, bottom to top
+    var B = [98.6, 80.3, 62.7, 45.8, 27.5, 10.6, 1.4];
+    var START = 0.10, STEP = 0.13;
+    var ease = function (x) { x = Math.max(0, Math.min(1, x)); return x * x * (3 - 2 * x); };
+    var last = -1;
+
+    function paint(p) {
+      var dusk = reduce ? 0 : ease(p / START);
+      var f = reduce ? 6 : (p - START) / STEP;           // 0..6 floors
+      var k = Math.max(0, Math.min(5, Math.floor(f)));
+      var t = ease(f - k);
+      var litTop = f <= 0 ? 100 : f >= 6 ? 0 : B[k] + (B[k + 1] - B[k]) * t;
+      if (f >= 6) litTop = 0;
+      tower.style.setProperty('--dusk', dusk.toFixed(3));
+      tower.style.setProperty('--lit-top', litTop.toFixed(2) + '%');
+      var on = f > 0 && f < 6.4 ? Math.min(5, Math.floor(Math.max(0, f))) : -1;
+      if (on >= 0 && !reduce) {
+        tower.style.setProperty('--glow-top', B[on + 1] + '%');
+        tower.style.setProperty('--glow-h', (B[on] - B[on + 1]) + '%');
+        tower.style.setProperty('--glow-o', (f >= 6 ? Math.max(0, 1 - (f - 6) * 2.5) : 1).toFixed(2));
+      } else {
+        tower.style.setProperty('--glow-o', '0');
+      }
+      var state = reduce ? 99 : Math.floor(f * 10);
+      if (state === last) return;
+      last = state;
+      rows.forEach(function (r, i) {
+        r.classList.toggle('is-lit', reduce || f > i);
+        r.classList.toggle('is-on', !reduce && i === on && f < 6);
+      });
+    }
+
+    function tick() {
+      var p = parseFloat(act.style.getPropertyValue('--sc-p')) || 0;
+      paint(p);
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  })();
+
+  /* Lead form → WhatsApp with the visitor's details prefilled. */
+  (function () {
+    var form = document.getElementById('lead-form');
+    if (!form) return;
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (!form.checkValidity()) { form.reportValidity(); return; }
+      var v = function (n) { return (form.elements[n].value || '').trim(); };
+      var lines = [
+        'Hola, me interesa TERRA 563.',
+        'Nombre: ' + v('nombre'),
+        'Teléfono: ' + v('telefono'),
+        'Correo: ' + v('correo'),
+        'Interés: ' + v('interes')
+      ];
+      if (v('mensaje')) lines.push('Mensaje: ' + v('mensaje'));
+      var url = 'https://wa.me/523321669764?text=' + encodeURIComponent(lines.join('\n'));
+      var w = window.open(url, '_blank', 'noopener');
+      if (!w) window.location.href = url;
+      form.querySelector('.form-submit').textContent = 'Abriendo WhatsApp…';
+    });
+  })();
+</script>
 </body>
 </html>
